@@ -7,21 +7,16 @@ import { mockData } from './mock';
 export default function App() {
   const savePassToWallet = async () => {
     try {
-      // const response = await fetch(
-      //   'https://crimson-resonance-896319.postman.co/workspace/My-Workspace~c3e6a3b1-3593-47d7-8bc0-160af05be356/mock/aaa0a20f-dc06-4276-901a-8cea6dadd63f'
-      // );
-      // const passData = await response.arrayBuffer();
-      // const base64Encoded = btoa(
-      //   String.fromCharCode(...new Uint8Array(passData))
-      // );
-
-      const base64Encoded = mockData.base64data;
+      const base64Encoded = mockData?.base64data;
 
       const success = await WalletPass.saveToWallet(base64Encoded);
+
       if (success) {
         Alert.alert('Success', 'Pass saved to wallet');
       }
     } catch (error) {
+      console.log('Error saving pass to wallet:', error);
+
       Alert.alert('Error', 'Failed to save pass to wallet');
     }
   };

@@ -1,6 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 
-const { AppleWallet } = NativeModules;
+const { GoogleWallet, AppleWallet } = NativeModules;
 
 interface WalletApi {
   saveToWallet: (policyNumber: string) => Promise<void>;
@@ -34,6 +34,20 @@ const Wallet: WalletApi =
       },
       isWalletAvailable: async () => {
         return AppleWallet.isWalletAvailable();
+      },
+    },
+    android: {
+      saveToWallet: async (signedJWT: string) => {
+        if (signedJWT.length) {
+          GoogleWallet.saveToGoogleWallet(signedJWT);
+        } else {
+          return Promise.reject(
+            'Could not save to Google Wallet. Signed JWT is empty.'
+          );
+        }
+      },
+      isWalletAvailable: async () => {
+        return GoogleWallet.isWalletAvailable();
       },
     },
   }) || defaultWallet;
