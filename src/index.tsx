@@ -1,5 +1,7 @@
 import { NativeModules } from 'react-native';
-import Wallet, { defaultWallet } from './wlletApi';
+import Wallet, { WalletApi, defaultWallet } from './walletApi';
 
-const PassManager = NativeModules.PassManager ? Wallet : defaultWallet;
+const PassManager: WalletApi = NativeModules.PassManager
+  ? Wallet
+  : defaultWallet;
 export default PassManager;

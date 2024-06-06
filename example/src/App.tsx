@@ -7,13 +7,9 @@ import { mockData } from './mock';
 export default function App() {
   const savePassToWallet = async () => {
     try {
-      const base64Encoded = mockData?.base64data;
-
-      const success = await WalletPass.saveToWallet(base64Encoded);
-
-      if (success) {
-        Alert.alert('Success', 'Pass saved to wallet');
-      }
+      const base64Encoded = mockData!.base64data;
+      await WalletPass.saveToWallet(base64Encoded);
+      console.log('Pass saved to wallet');
     } catch (error) {
       console.log('Error saving pass to wallet:', error);
 
