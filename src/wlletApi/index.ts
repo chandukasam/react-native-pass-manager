@@ -7,7 +7,7 @@ interface WalletApi {
   isWalletAvailable: () => Promise<boolean>;
 }
 
-const defaultWallet: WalletApi = {
+export const defaultWallet: WalletApi = {
   saveToWallet: async (_: string) => {
     /*  NOTE: Default implementation
         This will be used if the platform is not android or ios */
