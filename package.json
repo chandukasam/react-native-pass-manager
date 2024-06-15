@@ -43,7 +43,20 @@
     "wallet",
     "pkpass",
     "apple wallet",
-    "google wallet"
+    "google wallet",
+    "digital wallet",
+    "pass manager",
+    "mobile wallet",
+    "passbook integration",
+    "wallet integration",
+    "mobile pass",
+    "e-wallet",
+    "payment",
+    "mobile payment",
+    "loyalty cards",
+    "membership cards",
+    "boarding passes",
+    "event tickets"
   ],
   "repository": {
     "type": "git",

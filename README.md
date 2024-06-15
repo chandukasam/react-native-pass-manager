@@ -14,6 +14,33 @@ or using yarn
 yarn add react-native-pass-manager
 ```
 
+## Setup
+
+### Adding Google Wallet SDK
+
+To save passes correctly to Google Wallet, you need to add the Google Wallet SDK to your app. Follow these steps:
+
+1. Open the module-level Gradle build file (`android/app/build.gradle`).
+2. Add the Google Wallet SDK to the dependencies section:
+
+```gradle
+// TODO: Add the "com.google.android.gms:play-services-pay" dependency to
+//       use the Google Wallet API
+implementation "com.google.android.gms:play-services-pay:16.0.3"
+```
+
+### Enabling Apple Wallet
+
+To use Apple Wallet with your app, you need to enable the Wallet capability in your Xcode project. Follow these steps:
+
+1. Open your project in Xcode.
+2. Select your app's target and then go to the "Signing & Capabilities" tab.
+3. Click the "+" button to add a new capability.
+4. Search for and select "Wallet".
+5. Check the "Apple Wallet" capability to add it to your project.
+
+This step is essential for allowing your app to interact with Apple Wallet, enabling it to save passes on iOS devices.
+
 ## Usage
 
 Depending on the platform the PassManager will determine which wallet to use, Apple wallet for IOS and Google wallet for android.
