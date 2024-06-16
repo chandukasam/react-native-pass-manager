@@ -1,6 +1,6 @@
 {
   "name": "react-native-pass-manager",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "A pass manager for IOS and Android wallets",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
