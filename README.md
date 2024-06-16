@@ -1,6 +1,14 @@
 # react-native-pass-manager
 
+A unified pass manager for IOS and Android wallets
+
+# react-native-pass-manager
+
 A pass manager for IOS and Android wallets
+
+| <img src="./gifs/ios.gif" alt="alt text" width="250" height="500"/> | <img src="./gifs/android.gif" alt="alt text" width="250" height="500"/> |
+| :-----------------------------------------------------------------: | :---------------------------------------------------------------------: |
+|                    Saving passes to Apple Wallet                    |                     Saving passes to Google Wallet                      |
 
 ## Installation
 
@@ -26,7 +34,7 @@ To save passes correctly to Google Wallet, you need to add the Google Wallet SDK
 ```gradle
 // TODO: Add the "com.google.android.gms:play-services-pay" dependency to
 //       use the Google Wallet API
-implementation "com.google.android.gms:play-services-pay:16.0.3"
+implementation "com.google.android.gms:play-services-pay:<latest_version>"
 ```
 
 ### Enabling Apple Wallet
@@ -93,6 +101,60 @@ export default function App() {
   );
 }
 ```
+
+## More direct way to save passes using wallet buttons
+
+To simplify the process of saving a pass to the wallet and to handle the rendering and loading states of the wallet button, you can use the [`WalletButton`] component along with a custom function to fetch and save the pass. This approach abstracts the loading state management and conditional rendering based on the wallet's availability.
+
+### Example
+
+Below is an example that demonstrates how to use the [`WalletButton`] to save a pass to the wallet. This method automatically handles the rendering of the button based on the wallet's availability and displays a loading indicator while the pass is being saved.
+
+```tsx
+import React from 'react';
+import { View, Alert, StyleSheet } from 'react-native';
+import { WalletButton, PassManager } from 'react-native-pass-manager';
+
+function App() {
+  // Simulate fetching wallet pass
+  const fetchWalletPassMock = (): Promise<string> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const passString = 'your_mock_base64_encoded_pass_here';
+        resolve(passString);
+      }, 2000); // Simulate API call delay
+    });
+  };
+
+  const savePassToWallet = async () => {
+    try {
+      const passString = await fetchWalletPassMock();
+      await PassManager.saveToWallet(passString);
+      console.log('Pass saved to wallet');
+    } catch (error) {
+      console.log('Error saving pass to wallet:', error);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <WalletButton onPress={savePassToWallet} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+```
+
+This example demonstrates how to integrate the wallet saving functionality seamlessly into your app, providing a user-friendly way to add passes to the wallet with minimal effort.
+
+For more details on the `WalletButton` component and the `PassManager` API, refer to the respective sections in this document.
 
 The `WalletApi` interface provides two main methods to interact with the device's wallet (Apple Wallet for iOS and Google Wallet for Android). Below are the methods available:
 
