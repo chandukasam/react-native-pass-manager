@@ -1,28 +1,22 @@
 import * as React from 'react';
 
-import { Alert, Button, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { mockData } from './mock';
-import PassManager from 'react-native-pass-manager';
+import { PassManager, WalletButton } from 'react-native-pass-manager';
 
 export default function App() {
-  const [walletAvailable, setWalletAvailable] = React.useState(false);
-
-  const checkWallet = async () => {
-    try {
-      const isAvailable = await PassManager.isWalletAvailable();
-      setWalletAvailable(isAvailable);
-    } catch (error) {
-      console.log('Error checking if wallet is available:', error);
-    }
+  // Simulate fetching wallet pass
+  const fetchWalletPassMock = (): Promise<string> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockBase64Encoded = mockData!.passString;
+        resolve(mockBase64Encoded);
+      }, 2000); // Simulate API call delay
+    });
   };
-
-  React.useEffect(() => {
-    checkWallet();
-  }, []);
-
   const savePassToWallet = async () => {
     try {
-      const base64Encoded = mockData!.base64data;
+      const base64Encoded = await fetchWalletPassMock();
       await PassManager.saveToWallet(base64Encoded);
       console.log('Pass saved to wallet');
     } catch (error) {
@@ -32,9 +26,7 @@ export default function App() {
   };
   return (
     <View style={styles.container}>
-      {walletAvailable && (
-        <Button title="Save Pass to Wallet" onPress={savePassToWallet} />
-      )}
+      <WalletButton onPress={savePassToWallet} />
     </View>
   );
 }
@@ -44,6 +36,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#f0f0f0',
   },
   box: {
     width: 60,

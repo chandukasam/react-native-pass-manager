@@ -175,5 +175,8 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "react-native-svg": "^15.3.0"
   }
 }

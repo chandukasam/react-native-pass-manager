@@ -935,7 +935,7 @@ PODS:
   - React-Mapbuffer (0.74.2):
     - glog
     - React-debug
-  - react-native-pass-manager (0.1.0):
+  - react-native-pass-manager (0.1.4):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1185,6 +1185,8 @@ PODS:
     - React-logger (= 0.74.2)
     - React-perflogger (= 0.74.2)
     - React-utils (= 0.74.2)
+  - RNSVG (15.3.0):
+    - React-Core
   - SocketRocket (0.7.0)
   - Yoga (0.0.0)
 
@@ -1245,6 +1247,7 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1361,6 +1364,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1395,7 +1400,7 @@ SPEC CHECKSUMS:
   React-jsitracing: 0fa7f78d8fdda794667cb2e6f19c874c1cf31d7e
   React-logger: 29fa3e048f5f67fe396bc08af7606426d9bd7b5d
   React-Mapbuffer: bf56147c9775491e53122a94c423ac201417e326
-  react-native-pass-manager: 9fb0878188087dc0b087be4b61deeb2fe4592055
+  react-native-pass-manager: 521d99030d2fa023fe4486bc27b1316d085af275
   React-nativeconfig: 9f223cd321823afdecf59ed00861ab2d69ee0fc1
   React-NativeModulesApple: ff7efaff7098639db5631236cfd91d60abff04c0
   React-perflogger: 32ed45d9cee02cf6639acae34251590dccd30994
@@ -1419,6 +1424,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 56b642bf605ba5afa500d35790928fc1d51565ad
   React-utils: 4476b7fcbbd95cfd002f3e778616155241d86e31
   ReactCommon: ecad995f26e0d1e24061f60f4e5d74782f003f12
+  RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   Yoga: 2f71ecf38d934aecb366e686278102a51679c308
 

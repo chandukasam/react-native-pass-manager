@@ -3,7 +3,7 @@ import { NativeModules, Platform } from 'react-native';
 const { GoogleWallet, AppleWallet } = NativeModules;
 
 export interface WalletApi {
-  saveToWallet: (policyNumber: string) => Promise<void>;
+  saveToWallet: (base64Encoded: string) => Promise<void>;
   isWalletAvailable: () => Promise<boolean>;
 }
 
