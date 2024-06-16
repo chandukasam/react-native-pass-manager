@@ -2,10 +2,6 @@
 
 A unified pass manager for IOS and Android wallets
 
-# react-native-pass-manager
-
-A pass manager for IOS and Android wallets
-
 | <img src="./gifs/ios.gif" alt="alt text" width="250" height="500"/> | <img src="./gifs/android.gif" alt="alt text" width="250" height="500"/> |
 | :-----------------------------------------------------------------: | :---------------------------------------------------------------------: |
 |                    Saving passes to Apple Wallet                    |                     Saving passes to Google Wallet                      |
