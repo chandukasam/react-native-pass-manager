@@ -1,8 +1,11 @@
-
 import PassKit
 
 @objc(AppleWallet)
-class AppleWallet: NSObject {
+class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
+    var resolve: RCTPromiseResolveBlock?
+    var reject: RCTPromiseRejectBlock?
+    var pass: PKPass?
+
     @objc(isWalletAvailable:rejecter:)
     func isWalletAvailable(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         if PKPassLibrary.isPassLibraryAvailable() {
@@ -20,31 +23,58 @@ class AppleWallet: NSObject {
         }
         do {
             let pass = try PKPass(data: passData)
-            let passLibrary = PKPassLibrary()
-            passLibrary.addPasses([pass]) { status in
-                switch status {
-                case .shouldReviewPasses:
-                    // Resolve the promise with an object that contains both pieces of information
-                    resolve(["success": true, "status": "shouldReviewPasses"])
-                case .didAddPasses:
-                    // The pass was successfully added
-                    resolve(["success": true, "status": "didAddPasses"])
-                    // Open the Wallet app
-                    if UIApplication.shared.canOpenURL(URL(string: "shoebox://")!) {
-                        DispatchQueue.main.async {
-                            UIApplication.shared.open(URL(string: "shoebox://")!, options: [:], completionHandler: nil)
-                        }
-                    }
-                case .didCancelAddPasses:
-                    // The adding of the pass was cancelled or should be reviewed
-                    reject("ERROR", "Failed to add pass to Apple Wallet", nil)
-                @unknown default:
-                    // Handle any future cases
-                    reject("ERROR", "Unknown status", nil)
+            self.pass = pass
+            self.resolve = resolve
+            self.reject = reject
+
+            DispatchQueue.main.async {
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let rootViewController = scene.windows.first?.rootViewController {
+                    let addPassesViewController = PKAddPassesViewController(pass: pass)
+                    addPassesViewController?.delegate = self
+                    rootViewController.present(addPassesViewController ?? UIViewController(), animated: true, completion: nil)
+                } else {
+                    reject("ERROR", "in line 37", nil)
                 }
             }
         } catch {
-            reject("ERROR", "Failed to create pass from data", error)
+            reject("ERROR", "in line 41", error)
+        }
+    }
+
+    // PKAddPassesViewControllerDelegate method
+    func addPassesViewControllerDidFinish(_ controller: PKAddPassesViewController) {
+        controller.dismiss(animated: true) {
+            let passLibrary = PKPassLibrary()
+            if let pass = self.pass {
+                if passLibrary.containsPass(pass) {
+                    self.resolve?(["success": true, "status": "didAddPasses"])
+                    self.showPassInWallet(pass)
+                } else {
+                    self.reject?("ERROR", "in line 54", nil)
+                }
+            } else {
+                self.reject?("ERROR", "in line 57", nil)
+            }
+        }
+    }
+
+    private func showPassInWallet(_ pass: PKPass) {
+        if let passURL = pass.passURL {
+            DispatchQueue.main.async {
+                UIApplication.shared.open(passURL, options: [:], completionHandler: { success in
+                    if success {
+                        // Optionally, you can add a delay to ensure the Wallet app is opened before returning the status
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            self.resolve?(["success": true, "status": "didAddPasses"])
+                        }
+                    } else {
+                        self.reject?("ERROR", "Failed to open Wallet app", nil)
+                    }
+                })
+            }
+        } else {
+            self.reject?("ERROR", "Pass URL not found", nil)
         }
     }
 }
