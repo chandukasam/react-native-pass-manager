@@ -51,7 +51,7 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
                     self.resolve?(["success": true, "status": "didAddPasses"])
                     self.showPassInWallet(pass)
                 } else {
-                    self.reject?("ERROR", "in line 54", nil)
+                    self.resolve?(["success": false, "status": "didAddPasses"])
                 }
             } else {
                 self.reject?("ERROR", "in line 57", nil)

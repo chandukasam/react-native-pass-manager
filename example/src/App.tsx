@@ -1,6 +1,5 @@
 import * as React from 'react';
-
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { mockData } from './mock';
 import { PassManager, WalletButton } from 'react-native-pass-manager';
 
@@ -17,11 +16,14 @@ export default function App() {
   const savePassToWallet = async () => {
     try {
       const base64Encoded = await fetchWalletPassMock();
-      await PassManager.saveToWallet(base64Encoded);
-      console.log('Pass saved to wallet');
+      const { success } = await PassManager.saveToWallet(base64Encoded);
+      if (success) {
+        console.log('Pass saved to wallet', success);
+      } else {
+        console.log('Pass did not save wallet', success);
+      }
     } catch (error) {
       console.log('Error saving pass to wallet:', error);
-      Alert.alert('Error', 'Failed to save pass to wallet');
     }
   };
   return (
