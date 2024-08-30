@@ -26,6 +26,7 @@
     "!**/.*"
   ],
   "scripts": {
+     "build": "tsc",
     "example": "yarn workspace react-native-pass-manager-example",
     "test": "jest",
     "typecheck": "tsc --noEmit",

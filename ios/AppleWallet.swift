@@ -28,15 +28,34 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
             self.reject = reject
 
             DispatchQueue.main.async {
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let rootViewController = scene.windows.first?.rootViewController {
-                    let addPassesViewController = PKAddPassesViewController(pass: pass)
-                    addPassesViewController?.delegate = self
-                    rootViewController.present(addPassesViewController ?? UIViewController(), animated: true, completion: nil)
-                } else {
-                    reject("ERROR", "in line 37", nil)
-                }
+    let scenes = UIApplication.shared.connectedScenes
+    print("Connected scenes: \(scenes)")
+    
+    if let scene = scenes.first as? UIWindowScene {
+        print("Found UIWindowScene: \(scene)")
+        
+        if let window = scene.windows.first {
+            print("Found window: \(window)")
+            
+            if let rootViewController = window.rootViewController {
+                print("Found rootViewController: \(rootViewController)")
+                
+                let addPassesViewController = PKAddPassesViewController(pass: pass)
+                addPassesViewController?.delegate = self
+                rootViewController.present(addPassesViewController ?? UIViewController(), animated: true, completion: nil)
+            } else {
+                print("No rootViewController found")
+                reject("ERROR", "No rootViewController found", nil)
             }
+        } else {
+            print("No window found")
+            reject("ERROR", "No window found", nil)
+        }
+    } else {
+        print("No UIWindowScene found")
+        reject("ERROR", "No UIWindowScene found", nil)
+    }
+}
         } catch {
             reject("ERROR", "in line 41", error)
         }
