@@ -1,6 +1,6 @@
 {
   "name": "react-native-pass-manager",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A pass manager for IOS and Android wallets",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -26,7 +26,7 @@
     "!**/.*"
   ],
   "scripts": {
-     "build": "tsc",
+    "build": "tsc",
     "example": "yarn workspace react-native-pass-manager-example",
     "test": "jest",
     "typecheck": "tsc --noEmit",
