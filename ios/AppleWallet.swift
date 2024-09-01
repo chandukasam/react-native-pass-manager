@@ -4,67 +4,81 @@ import PassKit
 class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
     private var resolve: RCTPromiseResolveBlock?
     private var reject: RCTPromiseRejectBlock?
+    private var passAdded: Bool = false
+    private var pass: PKPass?
+
+    @objc(saveToAppleWallet:resolver:rejecter:)
+    func saveToAppleWallet(_ base64EncodedPass: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        self.resolve = resolve
+        self.reject = reject
+        self.passAdded = false
+        addPass(base64EncodedPass, resolve: resolve, reject: reject)
+    }
 
     @objc(isWalletAvailable:rejecter:)
     func isWalletAvailable(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         if PKPassLibrary.isPassLibraryAvailable() {
             resolve(true)
         } else {
-            resolve(false)
+            reject("ERROR", "Wallet is not available", nil)
         }
     }
 
-    @objc(addPass:resolver:rejecter:)
-    func addPass(_ base64EncodedPass: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        self.resolve = resolve
-        self.reject = reject
-
-        guard let passData = Data(base64Encoded: base64EncodedPass) else {
-            reject("ERROR", "Invalid base64 string", nil)
+    private func addPass(_ base64EncodedPass: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        guard let passData = Data(base64Encoded: base64EncodedPass),
+              let pass = try? PKPass(data: passData) else {
+            print("Failed to create PKPass")
+            reject("ERROR", "Failed to create PKPass", nil)
             return
         }
-
-        do {
-            let pass = try PKPass(data: passData)
-            showPassInWallet(pass: pass)
-        } catch {
-            reject("ERROR", "Failed to create PKPass", nil)
-        }
-    }
-
-    @objc(saveToAppleWallet:resolver:rejecter:)
-    func saveToAppleWallet(_ base64EncodedPass: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        addPass(base64EncodedPass, resolve: resolve, reject: reject)
+        print("PKPass created successfully")
+        self.pass = pass
+        self.showPassInWallet(pass: pass)
     }
 
     private func showPassInWallet(pass: PKPass) {
         if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
             let addPassesViewController = PKAddPassesViewController(pass: pass)
             addPassesViewController?.delegate = self
+            print("Presenting PKAddPassesViewController")
             rootViewController.present(addPassesViewController ?? UIViewController(), animated: true, completion: nil)
         } else {
-            reject?("ERROR", "No rootViewController found", nil)
+            print("No rootViewController found")
+            self.reject?("ERROR", "No rootViewController found", nil)
         }
     }
 
     func addPassesViewControllerDidFinish(_ controller: PKAddPassesViewController) {
         controller.dismiss(animated: true) {
-            let result = ["success": true, "status": "didAddPasses"]
-            self.resolve?(result)
-            self.navigateToWallet()
-        }
-    }
-
-    func addPassesViewControllerDidCancel(_ controller: PKAddPassesViewController) {
-        controller.dismiss(animated: true) {
-            let result = ["success": false, "status": "didAddPasses"]
-            self.resolve?(result)
+            let passLibrary = PKPassLibrary()
+            if let pass = self.pass, passLibrary.containsPass(pass) {
+                print("User pressed Add")
+                let result = ["success": true, "status": "didAddPasses"]
+                self.resolve?(result)
+                self.navigateToWallet()
+            } else {
+                print("User pressed Cancel")
+                let result = ["success": false, "status": "didCancel"]
+                self.resolve?(result)
+            }
+            self.clearCachedVariables()
         }
     }
 
     private func navigateToWallet() {
         if let url = URL(string: "shoebox://"), UIApplication.shared.canOpenURL(url) {
+            print("Navigating to Wallet")
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            print("Cannot open Wallet URL")
         }
+    }
+
+    private func clearCachedVariables() {
+        print("Clearing cached variables")
+        self.resolve = nil
+        self.reject = nil
+        self.passAdded = false
+        self.pass = nil
     }
 }
