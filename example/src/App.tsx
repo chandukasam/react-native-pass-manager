@@ -4,6 +4,8 @@ import { mockData } from './mock';
 import { PassManager, WalletButton } from 'react-native-pass-manager';
 
 export default function App() {
+  /*  NOTE: instead of this method, you can directly use the openPassInWallet method which will open the pass directly 
+   when you pass the passIdentifier and passSerialNumber */
   const [urlForThePass, setUrlForThePass] = React.useState<string | null>(null);
   const [isPassAlreadyInWallet, setIsPassAlreadyInWallet] =
     React.useState<boolean>(false);
@@ -58,7 +60,9 @@ export default function App() {
       <Text>{`Is Pass in the wallet: ${isPassAlreadyInWallet}`}</Text>
       <WalletButton onPress={savePassToWallet} />
       {urlForThePass && PassManager.openPassInWallet && (
-        <Pressable onPress={() => PassManager.openPassInWallet!(urlForThePass)}>
+        <Pressable
+          onPress={() => PassManager.openPassWithPassURI!(urlForThePass)}
+        >
           <Text>Open pass in Wallet</Text>
         </Pressable>
       )}

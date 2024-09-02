@@ -5,7 +5,11 @@ const { GoogleWallet, AppleWallet } = NativeModules;
 export interface WalletApi {
   saveToWallet: (base64Encoded: string) => Promise<PassResult>;
   isWalletAvailable: () => Promise<boolean>;
-  openPassInWallet?: (passURL: string) => Promise<PassResult>;
+  openPassWithPassURI?: (passURL: string) => Promise<PassResult>;
+  openPassInWallet?: (
+    passIdentifier: string,
+    passSerialNumber: string
+  ) => Promise<PassResult>;
   isPassInWallet?: (
     passIdentifier: string,
     serialNumber: string
@@ -25,11 +29,14 @@ export const defaultWallet: WalletApi = {
     return Promise.resolve({ success: false, status: 'Unsupported platform' });
   },
   isWalletAvailable: () => Promise.resolve(false),
-  openPassInWallet: async (_: string) => {
+  openPassWithPassURI: async (_: string) => {
+    return Promise.resolve({ success: false, status: 'Unsupported platform' });
+  },
+  openPassInWallet: async (_: string, __: string) => {
     return Promise.resolve({ success: false, status: 'Unsupported platform' });
   },
   isPassInWallet: async (_: string, __: string) => {
-    return false;
+    return Promise.resolve(false);
   },
 };
 
@@ -50,9 +57,25 @@ const Wallet: WalletApi =
       isWalletAvailable: async () => {
         return AppleWallet.isWalletAvailable();
       },
-      openPassInWallet: async (passURL: string): Promise<PassResult> => {
+      openPassInWallet: async (
+        passIdentifier: string,
+        serialNumber: string
+      ): Promise<PassResult> => {
         try {
-          const data: PassResult = await AppleWallet.openPassInWallet(passURL);
+          const data: PassResult = await AppleWallet.openPassInWallet(
+            passIdentifier,
+            serialNumber
+          );
+          return data;
+        } catch (error) {
+          console.error('Error in openPassInWallet:', error);
+          throw error;
+        }
+      },
+      openPassWithPassURI: async (passURL: string): Promise<PassResult> => {
+        try {
+          const data: PassResult =
+            await AppleWallet.openPassWithPassURI(passURL);
           return data;
         } catch (error) {
           console.error('Error in openPassInWallet:', error);

@@ -6,7 +6,8 @@
 RCT_EXTERN_METHOD(isWalletAvailable: (RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(openPassInWallet: (NSString *)passURL
+RCT_EXTERN_METHOD(openPassInWallet: (NSString *)passTypeIdentifier
+                  serialNumber:(NSString *)serialNumber
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
@@ -19,6 +20,9 @@ RCT_EXTERN_METHOD(isPassInWallet: (NSString *)passTypeIdentifier
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(openPassWithPassURI: (NSString *)passURI
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 
 + (BOOL)requiresMainQueueSetup
 {

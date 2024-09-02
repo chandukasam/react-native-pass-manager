@@ -24,8 +24,33 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
         }
     }
 
-    @objc(openPassInWallet:resolver:rejecter:)
-    func openPassInWallet(_ passURL: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc(openPassInWallet:serialNumber:resolver:rejecter:)
+    func openPassInWallet(_ passTypeIdentifier: String, serialNumber: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        // Construct the URL
+        let urlString = "shoebox://pass/\(passTypeIdentifier)/\(serialNumber)"
+        if let url = URL(string: urlString) {
+            // Attempt to open the URL
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: { success in
+                    if success {
+                        resolve(true)
+                    } else {
+                        resolve(false)
+                    }
+                })
+            } else {
+                print("Cannot open URL: \(urlString)")
+                reject("ERROR", "Cannot open URL: \(urlString)", nil)
+                return
+            }
+        } else {
+            reject("ERROR", "Cannot open URL: \(urlString)", nil)
+            return
+        }
+    }
+
+    @objc(openPassWithPassURI:resolver:rejecter:)
+    func openPassWithPassURI(_ passURL: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         if let url = URL(string: passURL), UIApplication.shared.canOpenURL(url) {
             print("Opening specific pass in Wallet")
             UIApplication.shared.open(url, options: [:], completionHandler: { success in
