@@ -115,7 +115,7 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
                 let passTypeIdentifier = pass.passTypeIdentifier
                 let serialNumber = pass.serialNumber
                 let passURL = "shoebox://pass/\(passTypeIdentifier)/\(serialNumber)"
-                let result = ["success": true, "status": "didAddPasses", "passURL": passURL]
+                let result = ["success": true, "status": "didAddPasses", "passURL": passURL, "passTypeIdentifier": passTypeIdentifier, "serialNumber": serialNumber]
                 print(result)
                 self.resolve?(result)
                 self.navigateToWallet()
