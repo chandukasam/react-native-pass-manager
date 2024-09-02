@@ -5,6 +5,8 @@ import { PassManager, WalletButton } from 'react-native-pass-manager';
 
 export default function App() {
   const [urlForThePass, setUrlForThePass] = React.useState<string | null>(null);
+  const [isPassAlreadyInWallet, setIsPassAlreadyInWallet] =
+    React.useState<boolean>(false);
   // Simulate fetching wallet pass
   const fetchWalletPassMock = (): Promise<string> => {
     return new Promise((resolve) => {
@@ -14,6 +16,22 @@ export default function App() {
       }, 2000); // Simulate API call delay
     });
   };
+
+  React.useEffect(() => {
+    const checkPassInWallet = async () => {
+      try {
+        const isPassInWallet = await PassManager.isPassInWallet!(
+          'your_pass_identifier',
+          'your_pass_serial_number'
+        );
+        setIsPassAlreadyInWallet(isPassInWallet);
+        console.log('Is pass in wallet:', isPassInWallet);
+      } catch (error) {
+        console.log('Error checking pass in wallet:', error);
+      }
+    };
+    checkPassInWallet();
+  }, []);
 
   const isIOS = Platform.OS === 'ios';
 
@@ -37,6 +55,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Text>{`Is Pass in the wallet: ${isPassAlreadyInWallet}`}</Text>
       <WalletButton onPress={savePassToWallet} />
       {urlForThePass && PassManager.openPassInWallet && (
         <Pressable onPress={() => PassManager.openPassInWallet!(urlForThePass)}>

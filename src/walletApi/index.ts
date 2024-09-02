@@ -5,7 +5,11 @@ const { GoogleWallet, AppleWallet } = NativeModules;
 export interface WalletApi {
   saveToWallet: (base64Encoded: string) => Promise<PassResult>;
   isWalletAvailable: () => Promise<boolean>;
-  openPassInWallet?: (passURL: string) => Promise<PassResult>; // Add the method to the interface
+  openPassInWallet?: (passURL: string) => Promise<PassResult>;
+  isPassInWallet?: (
+    passIdentifier: string,
+    serialNumber: string
+  ) => Promise<boolean>;
 }
 
 export interface PassResult {
@@ -23,6 +27,9 @@ export const defaultWallet: WalletApi = {
   isWalletAvailable: () => Promise.resolve(false),
   openPassInWallet: async (_: string) => {
     return Promise.resolve({ success: false, status: 'Unsupported platform' });
+  },
+  isPassInWallet: async (_: string, __: string) => {
+    return false;
   },
 };
 
@@ -51,6 +58,9 @@ const Wallet: WalletApi =
           console.error('Error in openPassInWallet:', error);
           throw error;
         }
+      },
+      isPassInWallet: async (passIdentifier: string, serialNumber: string) => {
+        return AppleWallet.isPassInWallet(passIdentifier, serialNumber);
       },
     },
     android: {

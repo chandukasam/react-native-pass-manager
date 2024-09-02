@@ -41,6 +41,22 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
         }
     }
 
+    @objc(isPassInWallet:serialNumber:resolver:rejecter:)
+    func isPassInWallet(_ passTypeIdentifier: String, serialNumber: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        let passLibrary = PKPassLibrary()
+        let passes = passLibrary.passes().filter { $0.passTypeIdentifier == passTypeIdentifier }
+
+        // Debugging: Print all passes
+        print("All passes:")
+        for pass in passLibrary.passes() {
+            print("Pass Type Identifier: \(pass.passTypeIdentifier), Serial Number: \(pass.serialNumber)")
+        }
+
+        let passExists = passes.contains { $0.serialNumber == serialNumber }
+        print("Pass exists: \(passExists)")
+        resolve(passExists)
+    }
+
     private func addPass(_ base64EncodedPass: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         guard let passData = Data(base64Encoded: base64EncodedPass),
               let pass = try? PKPass(data: passData)
