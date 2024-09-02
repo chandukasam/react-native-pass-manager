@@ -5,11 +5,13 @@ const { GoogleWallet, AppleWallet } = NativeModules;
 export interface WalletApi {
   saveToWallet: (base64Encoded: string) => Promise<PassResult>;
   isWalletAvailable: () => Promise<boolean>;
+  openPassInWallet?: (passURL: string) => Promise<PassResult>; // Add the method to the interface
 }
 
 export interface PassResult {
   success: boolean;
   status: string;
+  passURL?: string;
 }
 
 export const defaultWallet: WalletApi = {
@@ -19,9 +21,12 @@ export const defaultWallet: WalletApi = {
     return Promise.resolve({ success: false, status: 'Unsupported platform' });
   },
   isWalletAvailable: () => Promise.resolve(false),
+  openPassInWallet: async (_: string) => {
+    return Promise.resolve({ success: false, status: 'Unsupported platform' });
+  },
 };
 
-//Improvements: check is the pass already exists in the wallet before saving it
+// Improvements: check if the pass already exists in the wallet before saving it
 const Wallet: WalletApi =
   Platform.select({
     ios: {
@@ -37,6 +42,15 @@ const Wallet: WalletApi =
       },
       isWalletAvailable: async () => {
         return AppleWallet.isWalletAvailable();
+      },
+      openPassInWallet: async (passURL: string): Promise<PassResult> => {
+        try {
+          const data: PassResult = await AppleWallet.openPassInWallet(passURL);
+          return data;
+        } catch (error) {
+          console.error('Error in openPassInWallet:', error);
+          throw error;
+        }
       },
     },
     android: {

@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { mockData } from './mock';
 import { PassManager, WalletButton } from 'react-native-pass-manager';
 
 export default function App() {
+  const [urlForThePass, setUrlForThePass] = React.useState<string | null>(null);
   // Simulate fetching wallet pass
   const fetchWalletPassMock = (): Promise<string> => {
     return new Promise((resolve) => {
@@ -13,12 +14,19 @@ export default function App() {
       }, 2000); // Simulate API call delay
     });
   };
+
+  const isIOS = Platform.OS === 'ios';
+
   const savePassToWallet = async () => {
     try {
       const base64Encoded = await fetchWalletPassMock();
-      const { success } = await PassManager.saveToWallet(base64Encoded);
-      if (success) {
-        console.log('Pass saved to wallet', success);
+      //NOTE: pass manager result example
+      // ["success": true, "passURL": "shoebox://pass/pass.com.appID/1234567", "status": "didAddPasses"]
+      const { success, passURL } =
+        await PassManager.saveToWallet(base64Encoded);
+      if (success && passURL?.length && isIOS) {
+        setUrlForThePass(passURL);
+        console.log('Pass saved to wallet', { success, passURL });
       } else {
         console.log('Pass did not save wallet', success);
       }
@@ -26,9 +34,15 @@ export default function App() {
       console.log('Error saving pass to wallet:', error);
     }
   };
+
   return (
     <View style={styles.container}>
       <WalletButton onPress={savePassToWallet} />
+      {urlForThePass && PassManager.openPassInWallet && (
+        <Pressable onPress={() => PassManager.openPassInWallet!(urlForThePass)}>
+          <Text>Open pass in Wallet</Text>
+        </Pressable>
+      )}
     </View>
   );
 }

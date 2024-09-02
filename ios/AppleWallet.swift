@@ -12,7 +12,7 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
         self.resolve = resolve
         self.reject = reject
         self.passAdded = false
-        addPass(base64EncodedPass, resolve: resolve, reject: reject)
+        self.addPass(base64EncodedPass, resolve: resolve, reject: reject)
     }
 
     @objc(isWalletAvailable:rejecter:)
@@ -24,9 +24,27 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
         }
     }
 
+    @objc(openPassInWallet:resolver:rejecter:)
+    func openPassInWallet(_ passURL: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        if let url = URL(string: passURL), UIApplication.shared.canOpenURL(url) {
+            print("Opening specific pass in Wallet")
+            UIApplication.shared.open(url, options: [:], completionHandler: { success in
+                if success {
+                    resolve(true)
+                } else {
+                    reject("ERROR", "Failed to open Wallet", nil)
+                }
+            })
+        } else {
+            print("Cannot open Wallet URL")
+            reject("ERROR", "Cannot open Wallet URL", nil)
+        }
+    }
+
     private func addPass(_ base64EncodedPass: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         guard let passData = Data(base64Encoded: base64EncodedPass),
-              let pass = try? PKPass(data: passData) else {
+              let pass = try? PKPass(data: passData)
+        else {
             print("Failed to create PKPass")
             reject("ERROR", "Failed to create PKPass", nil)
             return
@@ -53,7 +71,11 @@ class AppleWallet: NSObject, PKAddPassesViewControllerDelegate {
             let passLibrary = PKPassLibrary()
             if let pass = self.pass, passLibrary.containsPass(pass) {
                 print("User pressed Add")
-                let result = ["success": true, "status": "didAddPasses"]
+                let passTypeIdentifier = pass.passTypeIdentifier
+                let serialNumber = pass.serialNumber
+                let passURL = "shoebox://pass/\(passTypeIdentifier)/\(serialNumber)"
+                let result = ["success": true, "status": "didAddPasses", "passURL": passURL]
+                print(result)
                 self.resolve?(result)
                 self.navigateToWallet()
             } else {
