@@ -1,0 +1,27 @@
+# Logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+dist/
+build/
+
+# Testing files
+__tests__/
+coverage/
+
+# Configuration files
+*.config.js
+*.config.json
+
+# Source files (if you are only distributing the built files)
+src/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Miscellaneous
+*.bak
+*.swp

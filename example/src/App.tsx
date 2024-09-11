@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { mockData } from './mock';
-import { PassManager, WalletButton } from 'react-native-pass-manager';
+import { PassManager, WalletButton } from '@tawny/react-native-pass-manager';
 
 export default function App() {
   /*  NOTE: instead of this method, you can directly use the openPassInWallet method which will open the pass directly 

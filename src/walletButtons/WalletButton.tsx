@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { AddToAppleWalletButton } from './AddToAppleWalletButton';
 import { AddToGoogleWalletButton } from './AddToGoogleWalletButton';
-import { PassManager } from 'react-native-pass-manager';
+import { PassManager } from '@tawny/react-native-pass-manager';
 
 interface IWalletButtonProps {
   onPress: () => Promise<any>;
