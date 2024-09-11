@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => min_ios_version_supported }
-  s.source       = { :git => "https://github.com/chandukasam/react-native-pass-manager.git", :tag => "#{s.version}" }
+  s.source = { :git => "https://github.com/chandukasam/react-native-pass-manager.git", :branch => "tawny" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
