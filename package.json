@@ -1,6 +1,6 @@
 {
   "name": "@tawny/react-native-pass-manager",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A pass manager for IOS and Android wallets",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -122,10 +122,11 @@
       "tagName": "v${version}"
     },
     "npm": {
-      "publish": true
+      "publish": true,
+      "registry": "https://pkgs.dev.azure.com/Direct-Line-Group-Test/21c9a6da-e41f-4356-8e3b-ed5996234d7b/_packaging/tawny-mobile/npm/registry/"
     },
     "github": {
-      "release": true
+      "release": false
     },
     "plugins": {
       "@release-it/conventional-changelog": {
